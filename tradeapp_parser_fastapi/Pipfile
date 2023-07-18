@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 fastapi = "==0.100.0"
 uvicorn = "==0.22.0"
+motor = "==3.2.0"
+python-dotenv = "==1.0.0"
+isort = "*"
 
 [dev-packages]
 
