@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
 
-from src.database import close_database_connection, \
-    connect_database, get_database
+from fastapi import FastAPI
+
+from src.assets.router import router as assets_router
+from src.database import (close_database_connection, connect_database,
+                          get_database)
 
 
 @asynccontextmanager
@@ -13,8 +15,4 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
-@app.get('/')
-async def post_some(db=Depends(get_database)):
-    db = db['tradeapp_fastapi']
-    await db.insert_one({'name': 'hello'})
+app.include_router(assets_router)
