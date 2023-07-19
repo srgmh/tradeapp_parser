@@ -4,8 +4,8 @@ from src.assets.schemas import Coin
 from src.database import get_database
 
 router = APIRouter(
-    prefix="/operations",
-    tags=["Operation"]
+    prefix="/assets",
+    tags=["Assets"]
 )
 
 
