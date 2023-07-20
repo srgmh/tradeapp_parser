@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from src.assets.router import router as assets_router
-from src.database import (close_database_connection, connect_database,
-                          get_database)
+from src.db.db import (close_database_connection, connect_database,
+                       get_database)
 
 
 @asynccontextmanager
