@@ -74,14 +74,11 @@ async def delete_coin(
     coin_name: str,
     db_client: DatabaseInterface = Depends(MongoDBClient)
 ):
-    # Check if the coin with the given name exists
     if not await db_client.item_exists(model=Coin, query={"coin": coin_name}):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Coin with this name not found.",
         )
-
-    # Delete the coin from the database
     if await db_client.delete_item(model=Coin, query={"coin": coin_name}):
         return {"message": "Coin deleted successfully."}
     else:

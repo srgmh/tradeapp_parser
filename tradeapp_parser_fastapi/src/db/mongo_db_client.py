@@ -1,4 +1,4 @@
-from typing import Optional, List, Type
+from typing import List, Type
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
@@ -8,27 +8,34 @@ from src.db.database_interface import DatabaseInterface
 
 
 class MongoDBClient(DatabaseInterface):
+
     def __init__(self):
         self.mongo_client = None
 
-    async def get_client(self):
+    async def get_client(self) -> AsyncIOMotorClient:
         if self.mongo_client is None:
             self.mongo_client = AsyncIOMotorClient(mongo_settings.DATABASE_URL)
         return self.mongo_client
 
-    async def close_client(self):
+    async def close_client(self) -> None:
         if self.mongo_client:
             self.mongo_client.close()
             self.mongo_client = None
 
-    async def save_item(self, item: BaseModel) -> str:
+    async def save_item(
+            self,
+            item: BaseModel
+    ) -> str:
         client = await self.get_client()
         db = client[mongo_settings.MONGO_INITDB_DATABASE]
         collection = db[item.Meta.collection]
         result = await collection.insert_one(item.model_dump())
         return str(result.inserted_id)
 
-    async def get_items(self, model: Type[BaseModel]) -> List[BaseModel]:
+    async def get_items(
+            self,
+            model: Type[BaseModel]
+    ) -> List[BaseModel]:
         client = await self.get_client()
         db = client[mongo_settings.MONGO_INITDB_DATABASE]
         collection = db[model.Meta.collection]
@@ -46,7 +53,12 @@ class MongoDBClient(DatabaseInterface):
         result = await collection.find_one(query)
         return result is not None
 
-    async def update_item(self, model: Type[BaseModel], query: dict, updates: dict) -> bool:
+    async def update_item(
+            self,
+            model: Type[BaseModel],
+            query: dict,
+            updates: dict
+    ) -> bool:
         client = await self.get_client()
         db = client[mongo_settings.MONGO_INITDB_DATABASE]
         collection = db[model.Meta.collection]
@@ -58,7 +70,11 @@ class MongoDBClient(DatabaseInterface):
         await collection.update_one(query, {"$set": updates})
         return True
 
-    async def delete_item(self, model: Type[BaseModel], query: dict) -> bool:
+    async def delete_item(
+            self,
+            model: Type[BaseModel],
+            query: dict
+    ) -> bool:
         client = await self.get_client()
         db = client[mongo_settings.MONGO_INITDB_DATABASE]
         collection = db[model.Meta.collection]
