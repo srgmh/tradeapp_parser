@@ -27,7 +27,7 @@ class MongoDBClient(DatabaseInterface):
             item: BaseModel
     ) -> str:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_INITDB_DATABASE]
+        db = client[mongo_settings.MONGO_COLLECTION]
         collection = db[item.Meta.collection]
         result = await collection.insert_one(item.model_dump())
         return str(result.inserted_id)
@@ -37,7 +37,7 @@ class MongoDBClient(DatabaseInterface):
             model: Type[BaseModel]
     ) -> List[BaseModel]:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_INITDB_DATABASE]
+        db = client[mongo_settings.MONGO_COLLECTION]
         collection = db[model.Meta.collection]
         cursor = collection.find({})
         items = [model(**item) for item in await cursor.to_list(length=None)]
@@ -48,7 +48,7 @@ class MongoDBClient(DatabaseInterface):
             model: Type[BaseModel],
             query: dict) -> bool:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_INITDB_DATABASE]
+        db = client[mongo_settings.MONGO_COLLECTION]
         collection = db[model.Meta.collection]
         result = await collection.find_one(query)
         return result is not None
@@ -60,7 +60,7 @@ class MongoDBClient(DatabaseInterface):
             updates: dict
     ) -> bool:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_INITDB_DATABASE]
+        db = client[mongo_settings.MONGO_COLLECTION]
         collection = db[model.Meta.collection]
 
         existing_item = await collection.find_one(query)
@@ -76,7 +76,7 @@ class MongoDBClient(DatabaseInterface):
             query: dict
     ) -> bool:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_INITDB_DATABASE]
+        db = client[mongo_settings.MONGO_COLLECTION]
         collection = db[model.Meta.collection]
 
         existing_item = await collection.find_one(query)
