@@ -2,7 +2,6 @@ from typing import List, Type
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-
 from src.config import mongo_settings
 from src.db.database_interface import DatabaseInterface
 

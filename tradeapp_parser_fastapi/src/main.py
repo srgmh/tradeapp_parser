@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-
 from src.assets.router import router as assets_router
 from src.db.mongo_db_client import MongoDBClient
 
