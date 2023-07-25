@@ -6,3 +6,10 @@ class Coin(BaseModel):
 
     class Meta:
         collection = 'coins'
+
+
+class Stock(BaseModel):
+    stock: str
+
+    class Meta:
+        collection = 'stocks'
