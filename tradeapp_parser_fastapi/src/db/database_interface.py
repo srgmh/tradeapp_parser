@@ -9,6 +9,9 @@ class DatabaseInterface(ABC):
     async def save_item(self, item: BaseModel) -> str:
         pass
 
+    async def save_list_of_items(self, **kwargs):
+        pass
+
     @abstractmethod
     async def get_items(self, **kwargs) -> List[BaseModel]:
         pass

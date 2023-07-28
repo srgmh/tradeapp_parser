@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from src.assets.schemas import Coin, Stock
 from src.db.mongo_db_client import MongoDBClient
 from src.services.asset_service import AssetService

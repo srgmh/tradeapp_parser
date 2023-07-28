@@ -1,5 +1,12 @@
+import asyncio
+import json
+from typing import List
+
+import websockets
 from pydantic import BaseModel
-from src.assets.schemas import Coin, Stock
+
+from src.assets.schemas import Coin, CoinRate, Stock
+from src.config import settings
 from src.db.database_interface import DatabaseInterface
 
 
@@ -80,3 +87,16 @@ class AssetService:
             return {"message": "Stock deleted successfully."}
         else:
             raise ValueError("Failed to delete stock.")
+
+    @staticmethod
+    async def get_websocket_json_data(uri) -> List[dict] | None:
+        async with websockets.connect(uri) as websocket:
+            data = await asyncio.wait_for(websocket.recv(), timeout=5)
+            data_dict = json.loads(data)
+            return data_dict['data']
+
+    async def save_coins_rate_to_db(self):
+        data = await self.get_websocket_json_data(settings.BINANCE_WEBSOCKET_URI)
+        allowed_symbols = set(item.coin for item in await self.get_coins())
+        items = [CoinRate.model_validate(item).model_dump() for item in data if item['s'] in allowed_symbols]
+        await self.db_client.save_list_of_items(items=items, model=CoinRate)

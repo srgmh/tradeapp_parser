@@ -1,8 +1,10 @@
+import datetime
 from typing import List, Type
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-from src.config import mongo_settings
+
+from src.config import settings
 from src.db.database_interface import DatabaseInterface
 
 
@@ -13,7 +15,7 @@ class MongoDBClient(DatabaseInterface):
 
     async def get_client(self) -> AsyncIOMotorClient:
         if self.mongo_client is None:
-            self.mongo_client = AsyncIOMotorClient(mongo_settings.DATABASE_URL)
+            self.mongo_client = AsyncIOMotorClient(settings.DATABASE_URL)
         return self.mongo_client
 
     async def close_client(self) -> None:
@@ -26,17 +28,32 @@ class MongoDBClient(DatabaseInterface):
             item: BaseModel
     ) -> str:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_COLLECTION]
+        db = client[settings.MONGO_DATABASE]
         collection = db[item.Meta.collection]
         result = await collection.insert_one(item.model_dump())
         return str(result.inserted_id)
+
+    async def save_list_of_items(
+            self,
+            items: List[dict],
+            model: BaseModel
+    ) -> None:
+        client = await self.get_client()
+        db = client[settings.MONGO_DATABASE]
+        collection = db[model.Meta.collection]
+        await collection.insert_one(
+            {
+                'datetime': datetime.datetime.now(),
+                'data': items
+            }
+        )
 
     async def get_items(
             self,
             model: Type[BaseModel]
     ) -> List[BaseModel]:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_COLLECTION]
+        db = client[settings.MONGO_DATABASE]
         collection = db[model.Meta.collection]
         cursor = collection.find({})
         items = [model(**item) for item in await cursor.to_list(length=None)]
@@ -47,7 +64,7 @@ class MongoDBClient(DatabaseInterface):
             model: Type[BaseModel],
             query: dict) -> bool:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_COLLECTION]
+        db = client[settings.MONGO_DATABASE]
         collection = db[model.Meta.collection]
         result = await collection.find_one(query)
         return result is not None
@@ -59,7 +76,7 @@ class MongoDBClient(DatabaseInterface):
             updates: dict
     ) -> bool:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_COLLECTION]
+        db = client[settings.MONGO_DATABASE]
         collection = db[model.Meta.collection]
 
         existing_item = await collection.find_one(query)
@@ -75,7 +92,7 @@ class MongoDBClient(DatabaseInterface):
             query: dict
     ) -> bool:
         client = await self.get_client()
-        db = client[mongo_settings.MONGO_COLLECTION]
+        db = client[settings.MONGO_DATABASE]
         collection = db[model.Meta.collection]
 
         existing_item = await collection.find_one(query)
