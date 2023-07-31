@@ -1,11 +1,12 @@
 import asyncio
 
-from src.config import settings
-from src.db.mongo_db_client import MongoDBClient
-from src.services.asset_service import AssetService
+from src.config import get_config
+from src.periodic_tasks import binance_websocket
 
 
 async def get_coins_exchange_rate_task():
+    config = get_config()
+
     while True:
-        await AssetService(MongoDBClient()).save_coins_rate_to_db()
-        await asyncio.sleep(settings.GETTING_COINS_EXCHANGE_RATE_TASK_TIMEOUT)
+        await binance_websocket.download_coins_data()
+        await asyncio.sleep(config.GETTING_COINS_EXCHANGE_RATE_TASK_TIMEOUT)

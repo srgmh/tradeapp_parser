@@ -1,15 +1,25 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import List
 
 from pydantic import BaseModel
 
 
-class DatabaseInterface(ABC):
+class DatabaseManager(object):
+
+    @property
+    def client(self):
+        raise NotImplementedError
+
+    @property
+    def db(self):
+        raise NotImplementedError
+
     @abstractmethod
-    async def save_item(self, item: BaseModel) -> str:
+    async def save_item(self, item: BaseModel):
         pass
 
-    async def save_list_of_items(self, **kwargs):
+    @abstractmethod
+    async def save_items(self, **kwargs):
         pass
 
     @abstractmethod
