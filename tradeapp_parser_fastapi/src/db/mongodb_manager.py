@@ -34,10 +34,6 @@ class MongoManager(DatabaseManager):
             items: List[dict],
             model: BaseModel
     ) -> None:
-        current_datetime = datetime.datetime.now()
-        for item in items:
-            item['date'] = current_datetime
-
         collection = self.db[model.Meta.collection]
         await collection.insert_many(items)
 

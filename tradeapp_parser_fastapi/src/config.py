@@ -4,10 +4,22 @@ from pydantic.v1.env_settings import BaseSettings
 
 
 class Config(BaseSettings):
+
+    # Mongo
     MONGO_INITDB_DATABASE: str
     DATABASE_URL: str
+
+    # Binance
     BINANCE_WEBSOCKET_URI: str
-    GETTING_COINS_EXCHANGE_RATE_TASK_TIMEOUT: int = 180
+
+    # Periodic tasks timeouts
+    GETTING_COINS_RATE_TASK_TIMEOUT: int = 60
+    GETTING_STOCKS_RATE_TASK_TIMEOUT: int = 60
+
+    # Alpha Vantage
+    ALPHA_VANTAGE_DEMO_API_KEY: str
+    ALPHA_VANTAGE_API_KEY: str
+    ALPHA_VANTAGE_URL: str
 
     class Config:
         env_file = '.env'
