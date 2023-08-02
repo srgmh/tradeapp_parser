@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - tradeapp_network
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/var/lib/mongodb/data/
+    env_file:
+      - .env
+    networks:
+      - tradeapp_network
+
+networks:
+  tradeapp_network:
+    external: True
+
+
+volumes:
+  mongodb_data:
