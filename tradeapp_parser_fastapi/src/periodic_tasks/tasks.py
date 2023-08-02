@@ -8,6 +8,7 @@ config = get_config()
 
 
 async def get_coins_rate_task():
+    await binance_websocket.connect()
     while True:
         await binance_websocket.save_coins_rate_to_db()
         await asyncio.sleep(config.GETTING_COINS_RATE_TASK_TIMEOUT)

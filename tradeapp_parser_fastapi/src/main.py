@@ -19,7 +19,6 @@ async def startup():
         path=config.DATABASE_URL,
         database=config.MONGO_INITDB_DATABASE
     )
-    await binance_websocket.connect()
     asyncio.create_task(get_coins_rate_task())
     asyncio.create_task(get_stocks_rate_task())
 
