@@ -12,6 +12,7 @@ isort = "*"
 websockets = "==11.0.3"
 requests = "==2.31.0"
 httpx = "==0.24.1"
+aiokafka = "==0.8.1"
 
 [dev-packages]
 
