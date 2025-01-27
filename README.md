@@ -1,16 +1,6 @@
 # tradeapp_parser
 
-pydantic BaseSettings
+Проект предназначен для поиска актуальных курсов криптовалют, и передачи их в микросервис tradeapp через кафку.
 
-mongo manager
-pydantic BaseSettings for Mongo
+Данный проект является микросервисом другого моего проекта https://github.com/srgmh/tradeapp
 
-
-Field(alias='s')
-Field(alias='с')
-
-роутеры
-бизнес логика
-работа с бд
-
-* переработать сохранение койнов в бд
